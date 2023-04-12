@@ -49,37 +49,23 @@ export default function Home() {
   });
 
   const onLoadMore = () => {
-    console.log("oddset", offset);
     if (offset < 151) {
       setOffset((prev) => prev + 20);
     }
   };
 
-  // const { loading, error, data, refetch } = useLazyQuery(GET_POKEMONS, {
-  //   variables: { first: 20 + offset },
-  //   pollInterval: 500,
-  //   onCompleted: () => {
-  //     setData2(data.pokemons);
-  //   },
-  // });
   const [getData, { loading, error, data }] = useLazyQuery(GET_POKEMONS, {
     variables: { first: 20 + offset },
   });
   useEffect(() => {
     getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [offset]);
-
-  // useEffect(() => {
-  //   console.log("offset", offset);
-  //   setOffset((prev) => prev + 20);
-  //   console.log("offset", offset);
-  // }, [page]);
-
-  console.log("current state of data", data);
 
   const nextPage = () => {
     setOffset((prev) => prev + 20);
@@ -90,7 +76,14 @@ export default function Home() {
     setOffset((prev) => prev - 20);
     setPage((prev) => prev - 1);
   };
-  if (loading) return <p>Loading...</p>;
+
+  if (loading) {
+    return (
+      <div className="flex mx-auto justify-center text-slate-900 text-5xl w-screen mt-32">
+        Loading..
+      </div>
+    );
+  }
   if (error) return <p>Error :( </p>;
   return (
     <Layout title={"Pokemon"}>
@@ -114,6 +107,7 @@ export default function Home() {
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:opacity-25"
           onClick={nextPage}
+          disabled={data?.pokemons && data.pokemons.length === 151}
         >
           Next
         </button>
@@ -121,11 +115,6 @@ export default function Home() {
     </Layout>
   );
 }
-
-// <div ref={ref}>
-//   {loading && <p>Loading...</p>}
-//   {/* <h2>{`Header inside viewport ${inView}.`}</h2> */}
-// </div>;
 
 export async function getStaticProps(context: GetStaticPropsContext) {
   const apolloClient = initializeApollo();

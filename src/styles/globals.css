@@ -7,3 +7,9 @@
     @apply bg-slate-300 text-white;
   }
 }
+.pokiloader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
